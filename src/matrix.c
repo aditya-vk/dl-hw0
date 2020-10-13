@@ -100,6 +100,7 @@ matrix matmul(matrix a, matrix b) {
       }
     }
   }
+  return c;
 }
 
 // In-place, element-wise scaling of matrix
@@ -276,5 +277,4 @@ void test_matrix() {
       print_matrix(res);
     }
   }
-}
 }
