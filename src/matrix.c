@@ -76,7 +76,6 @@ void axpy_matrix(float a, matrix x, matrix y) {
   assert(x.cols == y.cols);
   assert(x.rows == y.rows);
 
-  // TODO(avk):How is the result accessible outside of the function?
   for (int i = 0; i < x.rows; ++i) {
     for (int j = 0; j < x.cols; ++j) {
       y.data[i * y.cols + j] += a * x.data[i * x.cols + j];
