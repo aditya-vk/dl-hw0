@@ -10,11 +10,12 @@ extern "C" {
 // and some data stored as an array of floats
 // storage is row-major order:
 // https://en.wikipedia.org/wiki/Row-_and_column-major_order
-typedef struct matrix {
-  int rows, cols;
-  float *data;
-  int shallow;
+typedef struct matrix{
+    int rows, cols;
+    float *data;
+    int shallow;
 } matrix;
+
 
 // Make empty matrix filled with zeros
 // int rows: number of rows in matrix
@@ -31,6 +32,7 @@ matrix random_matrix(int rows, int cols, float s);
 // Free memory associated with matrix
 // matrix m: matrix to be freed
 void free_matrix(matrix m);
+
 
 // Copy a matrix
 // matrix m: matrix to be copied
