@@ -37,8 +37,11 @@ void backward_bias(matrix delta, matrix db)
 // returns: the result of running the layer: f(wx + b)
 matrix forward_connected_layer(layer l, matrix in)
 {
-    // TODO: 3.1 - run the network forward
-    matrix out = make_matrix(in.rows, l.w.cols); // Going to want to change this!
+    // Run the forward computation
+    matrix out = make_matrix(in.rows, l.w.cols);
+    out = matmul(in, l.w);
+    forward_bias(out, l.b);
+    activate_matrix(out, l.activation);
 
     // Saving our input and output and making a new delta matrix to hold errors
     // Probably don't change this
@@ -52,7 +55,7 @@ matrix forward_connected_layer(layer l, matrix in)
 
 // Run a connected layer backward
 // layer l: layer to run
-// matrix delta: 
+// matrix delta:
 void backward_connected_layer(layer l, matrix prev_delta)
 {
     matrix in    = l.in[0];

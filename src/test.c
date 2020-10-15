@@ -233,7 +233,7 @@ void run_tests()
     test_matmul();
     test_activate_matrix();
     test_gradient_matrix();
-    // test_connected_layer();
+    test_connected_layer();
     test_matrix_speed();
     printf("%d tests, %d passed, %d failed\n", tests_total, tests_total-tests_fail, tests_fail);
     printf("%d tests, %d passed, %d failed\n", tests_total, tests_total-tests_fail, tests_fail);
