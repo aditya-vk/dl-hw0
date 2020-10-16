@@ -23,7 +23,6 @@ typedef struct layer {
     // Weights
     matrix w;
     matrix dw;
-    matrix dldw;
 
     // Biases
     matrix b;
