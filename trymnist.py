@@ -22,7 +22,7 @@ rate = .01
 momentum = .9
 decay = .0
 
-m = softmax_model()
+m = neural_net()
 print("training...")
 train_image_classifier(m, train, batch, iters, rate, momentum, decay)
 print("done")
