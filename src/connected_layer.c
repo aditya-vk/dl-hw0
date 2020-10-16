@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
+#include <stdio.h>
 #include "uwnet.h"
 
 // Add bias terms to a matrix
@@ -27,6 +28,16 @@ void backward_bias(matrix delta, matrix db)
     for(i = 0; i < delta.rows; ++i){
         for(j = 0; j < delta.cols; ++j){
             db.data[j] += delta.data[i*delta.cols + j];
+        }
+    }
+}
+
+void backward_weights(matrix dldw, matrix dw)
+{
+    int i, j;
+    for(i = 0; i < dldw.rows; ++i){
+        for(j = 0; j < dldw.cols; ++j){
+            dw.data[j] += dldw.data[i*dldw.cols + j];
         }
     }
 }
@@ -61,28 +72,50 @@ void backward_connected_layer(layer l, matrix prev_delta)
     matrix in    = l.in[0];
     matrix out   = l.out[0];
     matrix delta = l.delta[0];
+    printf("weight 0,0: %f \n", l.w.data[0]);
 
     // TODO: 3.2
     // delta is the error made by this layer, dL/dout
     // First modify in place to be dL/d(in*w+b) using the gradient of activation
-    
+    gradient_matrix(out, l.activation, delta);
+
     // Calculate the updates for the bias terms using backward_bias
     // The current bias deltas are stored in l.db
+    backward_bias(delta, l.db);
 
-    // Then calculate dL/dw. Use axpy to add this dL/dw into any previously stored
-    // updates for our weights, which are stored in l.dw
+    // Then calculate dL/dw. Use axpy to add this dL/dw into any previously
+    // stored updates for our weights, which are stored in l.dw
+    matrix dldw = make_matrix(in.cols, delta.cols);
+    l.dldw = matmul(transpose_matrix(in), delta);
+    l.dldw = copy_matrix(dldw);
+    printf("l.dldw: %d %d \n", l.dldw.rows, l.dldw.cols);
+    printf("weight 0,0: %f \n", l.w.data[0]);
 
-    if(prev_delta.data){
-        // Finally, if there is a previous layer to calculate for,
-        // calculate dL/d(in). Again, using axpy, add this into the current
-        // value we have for the previous layers delta, prev_delta.
+    if (prev_delta.data) {
+      // Finally, if there is a previous layer to calculate for,
+      // calculate dL/d(in). Again, using axpy, add this into the current
+      // value we have for the previous layers delta, prev_delta.
+      matrix dldx = make_matrix(delta.rows, l.w.cols);
+      dldx = matmul(delta, transpose_matrix(l.w));
+      // TODO(avk): Invoke update_connected_layer to update dw.
     }
 }
 
 // Update 
 void update_connected_layer(layer l, float rate, float momentum, float decay)
 {
-    // TODO
+  // Scale the matrix by momentum.
+  scal_matrix(momentum, l.dw);
+  printf("l.dw: %d %d \n", l.dw.rows, l.dw.cols);
+
+  // Update dw.
+  printf("l.dldw: %d %d \n", l.dldw.rows, l.dldw.cols);
+  axpy_matrix(-1.0, l.dldw, l.dw);
+  printf("l.w: %d %d \n", l.w.rows, l.w.cols);
+  axpy_matrix(-decay, l.w, l.dw);
+
+  // Update the weights.
+  axpy_matrix(rate, l.dw, l.w);
 }
 
 layer make_connected_layer(int inputs, int outputs, ACTIVATION activation)
