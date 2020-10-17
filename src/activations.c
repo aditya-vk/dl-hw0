@@ -44,15 +44,12 @@ void gradient_matrix(matrix m, ACTIVATION a, matrix d)
     for(i = 0; i < m.rows; ++i){
         for(j = 0; j < m.cols; ++j){
             double x = m.data[i*m.cols + j];
-            double y = d.data[i*d.cols + j];
-            if(a == LOGISTIC){
-                y *= (1-x)*x;
-            } else if (a == RELU){
-                y = ((x < 0.0) ? 0 : y);
-            } else if (a == LRELU){
-                y = ((x < 0.0) ? 0.1*y : y);
-            }
-            d.data[i * d.cols + j] = y;
+            if (a == LOGISTIC)
+                d.data[i * d.cols + j] *= (1-x) * x;
+            if (a == RELU)
+                d.data[i * d.cols + j] *= ((x < 0.0) ? 0 : 1);
+            if (a == LRELU)
+                d.data[i * d.cols + j] *= ((x < 0.0) ? 0.1 : 1);
         }
     }
 }

@@ -49,8 +49,7 @@ void backward_weights(matrix dldw, matrix dw)
 matrix forward_connected_layer(layer l, matrix in)
 {
     // Run the forward computation
-    matrix out = make_matrix(in.rows, l.w.cols);
-    out = matmul(in, l.w);
+    matrix out = matmul(in, l.w);
     forward_bias(out, l.b);
     activate_matrix(out, l.activation);
 
@@ -85,16 +84,14 @@ void backward_connected_layer(layer l, matrix prev_delta)
     // Then calculate dL/dw. Use axpy to subtract this dL/dw into any previously stored
     // updates for our weights, which are stored in l.dw
     // l.dw = l.dw - dL/dw
-    matrix dldw = make_matrix(in.cols, delta.cols);
-    dldw = matmul(transpose_matrix(in), delta);
+    matrix dldw = matmul(transpose_matrix(in), delta);
     axpy_matrix(-1.0, dldw, l.dw);
 
     if (prev_delta.data) {
       // Finally, if there is a previous layer to calculate for,
       // calculate dL/d(in). Again, using axpy, add this into the current
       // value we have for the previous layers delta, prev_delta.
-      matrix dldx = make_matrix(delta.rows, l.w.cols);
-      dldx = matmul(delta, transpose_matrix(l.w));
+      matrix dldx = matmul(delta, transpose_matrix(l.w));
       axpy_matrix(1.0, dldx, prev_delta);
     }
 }
