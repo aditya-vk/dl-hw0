@@ -32,16 +32,6 @@ void backward_bias(matrix delta, matrix db)
     }
 }
 
-void backward_weights(matrix dldw, matrix dw)
-{
-    int i, j;
-    for(i = 0; i < dldw.rows; ++i){
-        for(j = 0; j < dldw.cols; ++j){
-            dw.data[j] += dldw.data[i*dldw.cols + j];
-        }
-    }
-}
-
 // Run a connected layer on input
 // layer l: pointer to layer to run
 // matrix in: input to layer
